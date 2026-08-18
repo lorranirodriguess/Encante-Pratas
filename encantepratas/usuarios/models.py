@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
-class Usuario(AbstractUser):
+class Usuario(User):
     cpf = models.CharField(max_length=11, unique=True)
     telefone = models.CharField(max_length=20)
     cep = models.CharField(max_length=9)
