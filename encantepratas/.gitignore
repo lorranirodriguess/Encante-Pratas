@@ -1,0 +1,40 @@
+# Bytecode e cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambiente virtual
+venv/
+env/
+.venv/
+ENV/
+
+# Banco de dados local
+db.sqlite3
+db.sqlite3-journal
+
+# Arquivos de configuração/segredos
+.env
+
+# Arquivos estáticos e mídia coletados
+staticfiles/
+media/
+
+# Migrações (opcional — descomente se não quiser versionar as migrations)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Testes e coverage
+.coverage
+htmlcov/
+.pytest_cache/
