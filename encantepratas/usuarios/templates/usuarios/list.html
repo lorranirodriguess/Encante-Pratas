@@ -4,7 +4,7 @@
 <a href="{% url 'usuario_create' %}">+ Novo usuário</a>
 <ul>
 {% for usuario in usuarios %}
-    <li><a href="{% url 'usuario_detail' usuario.pk %}">{{ usuario.user.username }}</a> — {{ usuario.cidade }}</li>
+    <li><a href="{% url 'usuario_detail' usuario.pk %}">{{ usuario.username }}</a> — {{ usuario.cidade }}</li>
 {% empty %}
     <li>Nenhum usuário cadastrado.</li>
 {% endfor %}

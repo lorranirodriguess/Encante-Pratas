@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Pagamento #{{ pagamento.pk }}</h1>
+<p>Pedido: #{{ pagamento.pedido.pk }} ({{ pagamento.pedido.cliente }})</p>
+<p>Forma: {{ pagamento.get_forma_pagamento_display }}</p>
+<p>Valor: R$ {{ pagamento.valor }}</p>
+<p>Status: {{ pagamento.get_status_display }}</p>
+<p>Data: {{ pagamento.data_pagamento }}</p>
+
+<a href="{% url 'pagamento_update' pagamento.pk %}">Editar</a> |
+<a href="{% url 'pagamento_delete' pagamento.pk %}">Excluir</a> |
+<a href="{% url 'pagamento_list' %}">Voltar</a>
+{% endblock %}

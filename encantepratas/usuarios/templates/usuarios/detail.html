@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ usuario.username }}</h1>
+<p>CPF: {{ usuario.cpf }}</p>
+<p>Telefone: {{ usuario.telefone }}</p>
+<p>Endereço: {{ usuario.rua }}, {{ usuario.numero_casa }} - {{ usuario.bairro }}, {{ usuario.cidade }}/{{ usuario.estado }} - CEP {{ usuario.cep }}</p>
+
+<a href="{% url 'usuario_update' usuario.pk %}">Editar</a> |
+<a href="{% url 'usuario_delete' usuario.pk %}">Excluir</a> |
+<a href="{% url 'usuario_list' %}">Voltar</a>
+{% endblock %}

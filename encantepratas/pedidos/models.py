@@ -42,7 +42,7 @@ class ItemPedido(models.Model):
         Produto, on_delete=models.PROTECT, related_name='itens_pedido'
     )
     quantidade = models.PositiveIntegerField()
-    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
 
     class Meta:
@@ -53,6 +53,23 @@ class ItemPedido(models.Model):
         return f'{self.quantidade}x {self.produto.nome}'
 
     def save(self, *args, **kwargs):
+        is_novo = self.pk is None
+        if not self.preco_unitario:
+            self.preco_unitario = self.produto.preco
         self.subtotal = self.preco_unitario * self.quantidade
         super().save(*args, **kwargs)
- 
+
+        if is_novo:
+            self.produto.estoque -= self.quantidade
+            self.produto.save(update_fields=['estoque'])
+
+        self.pedido.atualizar_valor_total()
+
+    def delete(self, *args, **kwargs):
+        pedido = self.pedido
+        produto = self.produto
+        quantidade = self.quantidade
+        super().delete(*args, **kwargs)
+        produto.estoque += quantidade
+        produto.save(update_fields=['estoque'])
+        pedido.atualizar_valor_total()

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Pagamentos</h1>
+<a href="{% url 'pagamento_create' %}">+ Novo pagamento</a>
+<ul>
+{% for pagamento in pagamentos %}
+    <li>Pedido #{{ pagamento.pedido.pk }} — {{ pagamento.get_forma_pagamento_display }} — R$ {{ pagamento.valor }} — {{ pagamento.get_status_display }}
+        (<a href="{% url 'pagamento_detail' pagamento.pk %}">ver</a>)
+    </li>
+{% empty %}
+    <li>Nenhum pagamento registrado.</li>
+{% endfor %}
+</ul>
+{% endblock %}

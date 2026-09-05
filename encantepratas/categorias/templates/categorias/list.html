@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Categorias</h1>
+<a href="{% url 'categoria_create' %}">+ Nova categoria</a>
+<ul>
+{% for categoria in categorias %}
+    <li>
+        <a href="{% url 'categoria_detail' categoria.pk %}">{{ categoria.nome }}</a>
+        {% if not categoria.ativo %}(inativa){% endif %}
+    </li>
+{% empty %}
+    <li>Nenhuma categoria cadastrada.</li>
+{% endfor %}
+</ul>
+{% endblock %}

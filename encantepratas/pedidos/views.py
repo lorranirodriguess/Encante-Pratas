@@ -1,3 +1,76 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.db import transaction
+from .models import Pedido
+from .forms import PedidoForm, PedidoUpdateForm, ItemPedidoFormSet
 
-# Create your views here.
+
+def _endereco_do_cliente(cliente):
+    return f'{cliente.rua}, {cliente.numero_casa} - {cliente.bairro}, {cliente.cidade}/{cliente.estado} - CEP {cliente.cep}'
+
+
+def pedido_list(request):
+    pedidos = Pedido.objects.select_related('cliente').all()
+    return render(request, 'pedidos/list.html', {'pedidos': pedidos})
+
+
+def pedido_detail(request, pk):
+    pedido = get_object_or_404(Pedido, pk=pk)
+    return render(request, 'pedidos/detail.html', {'pedido': pedido})
+
+
+def pedido_create(request):
+    if request.method == 'POST':
+        form = PedidoForm(request.POST)
+        # instância "rascunho" só pra validar o formset, ainda não salva no banco
+        formset = ItemPedidoFormSet(request.POST, instance=Pedido())
+
+        if form.is_valid() and formset.is_valid():
+            with transaction.atomic():
+                pedido = form.save(commit=False)
+                if not pedido.endereco_entrega:
+                    pedido.endereco_entrega = _endereco_do_cliente(pedido.cliente)
+                pedido.save()
+
+                formset.instance = pedido
+                formset.save()
+                pedido.atualizar_valor_total()
+
+            messages.success(request, 'Pedido criado com sucesso!')
+            return redirect('pedido_detail', pk=pedido.pk)
+    else:
+        form = PedidoForm()
+        formset = ItemPedidoFormSet()
+    return render(request, 'pedidos/form.html', {'form': form, 'formset': formset, 'titulo': 'Novo Pedido'})
+
+
+def pedido_update(request, pk):
+    pedido = get_object_or_404(Pedido, pk=pk)
+    if request.method == 'POST':
+        form = PedidoUpdateForm(request.POST, instance=pedido)
+        formset = ItemPedidoFormSet(request.POST, instance=pedido)
+
+        if form.is_valid() and formset.is_valid():
+            with transaction.atomic():
+                pedido = form.save(commit=False)
+                if not pedido.endereco_entrega:
+                    pedido.endereco_entrega = _endereco_do_cliente(pedido.cliente)
+                pedido.save()
+                formset.save()
+                pedido.atualizar_valor_total()
+
+            messages.success(request, 'Pedido atualizado!')
+            return redirect('pedido_detail', pk=pk)
+    else:
+        form = PedidoUpdateForm(instance=pedido)
+        formset = ItemPedidoFormSet(instance=pedido)
+    return render(request, 'pedidos/form.html', {'form': form, 'formset': formset, 'titulo': 'Editar Pedido'})
+
+
+def pedido_delete(request, pk):
+    pedido = get_object_or_404(Pedido, pk=pk)
+    if request.method == 'POST':
+        pedido.delete()
+        messages.success(request, 'Pedido removido.')
+        return redirect('pedido_list')
+    return render(request, 'pedidos/confirm_delete.html', {'pedido': pedido})

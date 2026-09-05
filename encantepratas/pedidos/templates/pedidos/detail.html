@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Pedido #{{ pedido.pk }}</h1>
+<p>Cliente: {{ pedido.cliente }}</p>
+<p>Status: {{ pedido.get_status_display }}</p>
+<p>Data: {{ pedido.data_pedido }}</p>
+<p>Endereço: {{ pedido.endereco_entrega }}</p>
+<p><strong>Valor total: R$ {{ pedido.valor_total }}</strong></p>
+
+<h3>Itens</h3>
+<ul>
+{% for item in pedido.itens.all %}
+    <li>{{ item.quantidade }}x {{ item.produto.nome }} — R$ {{ item.preco_unitario }} (subtotal: R$ {{ item.subtotal }})</li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'pedido_update' pedido.pk %}">Editar</a> |
+<a href="{% url 'pedido_delete' pedido.pk %}">Excluir</a> |
+<a href="{% url 'pedido_list' %}">Voltar</a>
+{% endblock %}

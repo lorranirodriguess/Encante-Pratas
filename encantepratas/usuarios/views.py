@@ -4,7 +4,7 @@ from .models import Usuario
 from .forms import UsuarioForm, UsuarioUpdateForm
 
 def usuario_list(request):
-    usuarios = Usuario.objects.select_related('user').all()
+    usuarios = Usuario.objects.all()
     return render(request, 'usuarios/list.html', {'usuarios': usuarios})
 
 def usuario_detail(request, pk):
@@ -37,7 +37,7 @@ def usuario_update(request, pk):
 def usuario_delete(request, pk):
     usuario = get_object_or_404(Usuario, pk=pk)
     if request.method == 'POST':
-        usuario.user.delete()  # cascade apaga o Usuario também
+        usuario.delete()
         messages.success(request, 'Usuário removido.')
         return redirect('usuario_list')
     return render(request, 'usuarios/confirm_delete.html', {'usuario': usuario})

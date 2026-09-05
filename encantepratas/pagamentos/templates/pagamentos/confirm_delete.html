@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Excluir pagamento #{{ pagamento.pk }}?</h1>
+<p>Pedido: #{{ pagamento.pedido.pk }}</p>
+<p>Valor: R$ {{ pagamento.valor }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar exclusão</button>
+</form>
+<a href="{% url 'pagamento_detail' pagamento.pk %}">Cancelar</a>
+{% endblock %}

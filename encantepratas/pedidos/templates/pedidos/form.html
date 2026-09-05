@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ titulo }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h3>Itens</h3>
+    {{ formset.management_form }}
+    {% for item_form in formset %}
+        <div>{{ item_form.as_p }}</div>
+    {% endfor %}
+    <button type="submit">Salvar</button>
+</form>
+<a href="{% url 'pedido_list' %}">Cancelar</a>
+{% endblock %}
