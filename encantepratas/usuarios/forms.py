@@ -17,7 +17,6 @@ class UsuarioForm(forms.ModelForm):
 
 
 class UsuarioUpdateForm(forms.ModelForm):
-    """Edição não mexe em username/senha, só nos dados de perfil."""
     class Meta:
         model = Usuario
         fields = ['cpf', 'telefone', 'cep', 'bairro', 'cidade', 'estado', 'rua', 'numero_casa']
