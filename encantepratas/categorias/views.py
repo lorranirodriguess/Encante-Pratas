@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Categoria
@@ -12,6 +13,7 @@ def categoria_detail(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     return render(request, 'categorias/detail.html', {'categoria': categoria})
 
+@login_required
 def categoria_create(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
@@ -23,6 +25,7 @@ def categoria_create(request):
         form = CategoriaForm()
     return render(request, 'categorias/form.html', {'form': form, 'titulo': 'Nova Categoria'})
 
+@login_required
 def categoria_update(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == 'POST':
@@ -35,6 +38,7 @@ def categoria_update(request, pk):
         form = CategoriaForm(instance=categoria)
     return render(request, 'categorias/form.html', {'form': form, 'titulo': 'Editar Categoria'})
 
+@login_required
 def categoria_delete(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == 'POST':

@@ -5,11 +5,18 @@
     <title>{% block title %}Loja de Prata{% endblock %}</title>
 </head>
 <body>
+    {% if user.is_authenticated %}
+        <p>Olá, {{ user.username }} | <a href="{% url 'logout' %}">Sair</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}">Entrar</a></p>
+    {% endif %}
+
     {% if messages %}
         <ul>
         {% for message in messages %}<li>{{ message }}</li>{% endfor %}
         </ul>
     {% endif %}
+
     {% block content %}{% endblock %}
 </body>
 </html>

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Pagamento
@@ -11,6 +12,7 @@ def pagamento_detail(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
     return render(request, 'pagamentos/detail.html', {'pagamento': pagamento})
 
+@login_required
 def pagamento_create(request):
     if request.method == 'POST':
         form = PagamentoForm(request.POST)
@@ -24,6 +26,7 @@ def pagamento_create(request):
         form = PagamentoForm()
     return render(request, 'pagamentos/form.html', {'form': form, 'titulo': 'Novo Pagamento'})
 
+@login_required
 def pagamento_update(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
     if request.method == 'POST':
@@ -36,6 +39,7 @@ def pagamento_update(request, pk):
         form = PagamentoUpdateForm(instance=pagamento)
     return render(request, 'pagamentos/form.html', {'form': form, 'titulo': 'Editar Pagamento'})
 
+@login_required
 def pagamento_delete(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
     if request.method == 'POST':

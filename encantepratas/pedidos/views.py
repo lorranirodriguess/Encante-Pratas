@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import transaction
@@ -13,12 +14,12 @@ def pedido_list(request):
     pedidos = Pedido.objects.select_related('cliente').all()
     return render(request, 'pedidos/list.html', {'pedidos': pedidos})
 
-
 def pedido_detail(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
     return render(request, 'pedidos/detail.html', {'pedido': pedido})
 
 
+@login_required
 def pedido_create(request):
     if request.method == 'POST':
         form = PedidoForm(request.POST)
@@ -44,6 +45,7 @@ def pedido_create(request):
     return render(request, 'pedidos/form.html', {'form': form, 'formset': formset, 'titulo': 'Novo Pedido'})
 
 
+@login_required
 def pedido_update(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
     if request.method == 'POST':
@@ -67,6 +69,7 @@ def pedido_update(request, pk):
     return render(request, 'pedidos/form.html', {'form': form, 'formset': formset, 'titulo': 'Editar Pedido'})
 
 
+@login_required
 def pedido_delete(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
     if request.method == 'POST':
