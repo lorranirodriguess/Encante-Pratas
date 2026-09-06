@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Produto
@@ -12,7 +12,7 @@ def produto_detail(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     return render(request, 'produtos/detail.html', {'produto': produto})
 
-@login_required
+@permission_required
 def produto_create(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
@@ -24,7 +24,7 @@ def produto_create(request):
         form = ProdutoForm()
     return render(request, 'produtos/form.html', {'form': form, 'titulo': 'Novo Produto'})
 
-@login_required
+@permission_required
 def produto_update(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':
@@ -37,7 +37,7 @@ def produto_update(request, pk):
         form = ProdutoForm(instance=produto)
     return render(request, 'produtos/form.html', {'form': form, 'titulo': 'Editar Produto'})
 
-@login_required
+@permission_required
 def produto_delete(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':

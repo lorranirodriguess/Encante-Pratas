@@ -4,21 +4,23 @@ from .models import Pedido, ItemPedido
 
 
 class PedidoForm(forms.ModelForm):
+    """Usado na criação — sem 'cliente' (é sempre o usuário logado) e sem 'status' (nasce 'pendente')."""
     class Meta:
         model = Pedido
-        fields = ['cliente', 'endereco_entrega']
+        fields = ['endereco_entrega']
         widgets = {
             'endereco_entrega': forms.TextInput(attrs={
                 'placeholder': 'Deixe em branco para usar o endereço cadastrado do cliente'
             })
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def _init_(self, *args, **kwargs):
+        super()._init_(*args, **kwargs)
         self.fields['endereco_entrega'].required = False
 
 
 class PedidoUpdateForm(forms.ModelForm):
+    """Usado na edição — aqui sim status e cliente podem ser alterados (uso administrativo/staff)."""
     class Meta:
         model = Pedido
         fields = ['cliente', 'status', 'endereco_entrega']
@@ -28,8 +30,8 @@ class PedidoUpdateForm(forms.ModelForm):
             })
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def _init_(self, *args, **kwargs):
+        super()._init_(*args, **kwargs)
         self.fields['endereco_entrega'].required = False
 
 

@@ -1,6 +1,6 @@
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from .models import Pedido
 from .forms import PedidoForm, PedidoUpdateForm, ItemPedidoFormSet
@@ -14,6 +14,7 @@ def pedido_list(request):
     pedidos = Pedido.objects.select_related('cliente').all()
     return render(request, 'pedidos/list.html', {'pedidos': pedidos})
 
+
 def pedido_detail(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
     return render(request, 'pedidos/detail.html', {'pedido': pedido})
@@ -23,12 +24,12 @@ def pedido_detail(request, pk):
 def pedido_create(request):
     if request.method == 'POST':
         form = PedidoForm(request.POST)
-        # instância "rascunho" só pra validar o formset, ainda não salva no banco
         formset = ItemPedidoFormSet(request.POST, instance=Pedido())
 
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 pedido = form.save(commit=False)
+                pedido.cliente = request.user  # <-- AJUSTE DO PASSO 4: sempre o usuário logado
                 if not pedido.endereco_entrega:
                     pedido.endereco_entrega = _endereco_do_cliente(pedido.cliente)
                 pedido.save()
