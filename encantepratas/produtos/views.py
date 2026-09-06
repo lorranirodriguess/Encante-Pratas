@@ -12,7 +12,7 @@ def produto_detail(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     return render(request, 'produtos/detail.html', {'produto': produto})
 
-@permission_required
+@permission_required('produtos.add_produto', raise_exception=True)
 def produto_create(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
@@ -24,7 +24,7 @@ def produto_create(request):
         form = ProdutoForm()
     return render(request, 'produtos/form.html', {'form': form, 'titulo': 'Novo Produto'})
 
-@permission_required
+@permission_required('produtos.change_produto', raise_exception=True)
 def produto_update(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':
