@@ -17,14 +17,14 @@ def pedido_list(request):
     if request.user.has_perm('pedidos.view_pedido'):
         pedidos = Pedido.objects.select_related('cliente').all()
     else:
-        pedidos = Pedido.objects.filter(cliente=request.user)
+        pedidos = Pedido.objects.filter(cliente=request.user.usuario)
     return render(request, 'pedidos/list.html', {'pedidos': pedidos})
 
 
 @login_required
 def pedido_detail(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
-    if pedido.cliente != request.user and not request.user.has_perm('pedidos.view_pedido'):
+    if pedido.cliente != request.user.usuario and not request.user.has_perm('pedidos.view_pedido'):
         raise PermissionDenied
     return render(request, 'pedidos/detail.html', {'pedido': pedido})
 
@@ -38,7 +38,7 @@ def pedido_create(request):
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 pedido = form.save(commit=False)
-                pedido.cliente = request.user
+                pedido.cliente = request.user.usuario
                 if not pedido.endereco_entrega:
                     pedido.endereco_entrega = _endereco_do_cliente(pedido.cliente)
                 pedido.save()
