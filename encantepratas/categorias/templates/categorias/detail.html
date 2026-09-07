@@ -4,7 +4,11 @@
 <p>{{ categoria.descricao }}</p>
 <p>Status: {% if categoria.ativo %}Ativa{% else %}Inativa{% endif %}</p>
 
-<a href="{% url 'categoria_update' categoria.pk %}">Editar</a> |
-<a href="{% url 'categoria_delete' categoria.pk %}">Excluir</a> |
+{% if perms.categorias.change_categoria %}
+    <a href="{% url 'categoria_update' categoria.pk %}">Editar</a> |
+{% endif %}
+{% if perms.categorias.delete_categoria %}
+    <a href="{% url 'categoria_delete' categoria.pk %}">Excluir</a> |
+{% endif %}
 <a href="{% url 'categoria_list' %}">Voltar</a>
 {% endblock %}

@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
+
 from .models import Pedido
 from .forms import PedidoForm, PedidoUpdateForm, ItemPedidoFormSet
 
@@ -10,13 +12,20 @@ def _endereco_do_cliente(cliente):
     return f'{cliente.rua}, {cliente.numero_casa} - {cliente.bairro}, {cliente.cidade}/{cliente.estado} - CEP {cliente.cep}'
 
 
+@login_required
 def pedido_list(request):
-    pedidos = Pedido.objects.select_related('cliente').all()
+    if request.user.has_perm('pedidos.view_pedido'):
+        pedidos = Pedido.objects.select_related('cliente').all()
+    else:
+        pedidos = Pedido.objects.filter(cliente=request.user)
     return render(request, 'pedidos/list.html', {'pedidos': pedidos})
 
 
+@login_required
 def pedido_detail(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
+    if pedido.cliente != request.user and not request.user.has_perm('pedidos.view_pedido'):
+        raise PermissionDenied
     return render(request, 'pedidos/detail.html', {'pedido': pedido})
 
 
@@ -29,7 +38,7 @@ def pedido_create(request):
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 pedido = form.save(commit=False)
-                pedido.cliente = request.user  # <-- AJUSTE DO PASSO 4: sempre o usuário logado
+                pedido.cliente = request.user
                 if not pedido.endereco_entrega:
                     pedido.endereco_entrega = _endereco_do_cliente(pedido.cliente)
                 pedido.save()
@@ -46,7 +55,7 @@ def pedido_create(request):
     return render(request, 'pedidos/form.html', {'form': form, 'formset': formset, 'titulo': 'Novo Pedido'})
 
 
-@login_required
+@permission_required('pedidos.change_pedido', raise_exception=True)
 def pedido_update(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
     if request.method == 'POST':
@@ -70,7 +79,7 @@ def pedido_update(request, pk):
     return render(request, 'pedidos/form.html', {'form': form, 'formset': formset, 'titulo': 'Editar Pedido'})
 
 
-@login_required
+@permission_required('pedidos.delete_pedido', raise_exception=True)
 def pedido_delete(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
     if request.method == 'POST':

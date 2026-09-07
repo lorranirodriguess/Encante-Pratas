@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Pagamentos</h1>
-<a href="{% url 'pagamento_create' %}">+ Novo pagamento</a>
+{% if perms.pagamentos.add_pagamento %}
+    <a href="{% url 'pagamento_create' %}">+ Novo pagamento</a>
+{% endif %}
 <ul>
 {% for pagamento in pagamentos %}
     <li>Pedido #{{ pagamento.pedido.pk }} — {{ pagamento.get_forma_pagamento_display }} — R$ {{ pagamento.valor }} — {{ pagamento.get_status_display }}

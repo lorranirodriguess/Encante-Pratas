@@ -7,7 +7,11 @@
 <p>Status: {{ pagamento.get_status_display }}</p>
 <p>Data: {{ pagamento.data_pagamento }}</p>
 
-<a href="{% url 'pagamento_update' pagamento.pk %}">Editar</a> |
-<a href="{% url 'pagamento_delete' pagamento.pk %}">Excluir</a> |
+{% if perms.pagamentos.change_pagamento %}
+    <a href="{% url 'pagamento_update' pagamento.pk %}">Editar</a> |
+{% endif %}
+{% if perms.pagamentos.delete_pagamento %}
+    <a href="{% url 'pagamento_delete' pagamento.pk %}">Excluir</a> |
+{% endif %}
 <a href="{% url 'pagamento_list' %}">Voltar</a>
 {% endblock %}

@@ -1,18 +1,30 @@
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
+
 from .models import Pagamento
 from .forms import PagamentoForm, PagamentoUpdateForm
 
-def pagamento_list(request):
-    pagamentos = Pagamento.objects.select_related('pedido').all()
-    return render(request, 'pagamentos/list.html', {'pagamentos': pagamentos})
-
-def pagamento_detail(request, pk):
-    pagamento = get_object_or_404(Pagamento, pk=pk)
-    return render(request, 'pagamentos/detail.html', {'pagamento': pagamento})
 
 @login_required
+def pagamento_list(request):
+    if request.user.has_perm('pagamentos.view_pagamento'):
+        pagamentos = Pagamento.objects.select_related('pedido').all()
+    else:
+        pagamentos = Pagamento.objects.filter(pedido__cliente=request.user)
+    return render(request, 'pagamentos/list.html', {'pagamentos': pagamentos})
+
+
+@login_required
+def pagamento_detail(request, pk):
+    pagamento = get_object_or_404(Pagamento, pk=pk)
+    if pagamento.pedido.cliente != request.user and not request.user.has_perm('pagamentos.view_pagamento'):
+        raise PermissionDenied
+    return render(request, 'pagamentos/detail.html', {'pagamento': pagamento})
+
+
+@permission_required('pagamentos.add_pagamento', raise_exception=True)
 def pagamento_create(request):
     if request.method == 'POST':
         form = PagamentoForm(request.POST)
@@ -26,7 +38,8 @@ def pagamento_create(request):
         form = PagamentoForm()
     return render(request, 'pagamentos/form.html', {'form': form, 'titulo': 'Novo Pagamento'})
 
-@login_required
+
+@permission_required('pagamentos.change_pagamento', raise_exception=True)
 def pagamento_update(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
     if request.method == 'POST':
@@ -39,7 +52,8 @@ def pagamento_update(request, pk):
         form = PagamentoUpdateForm(instance=pagamento)
     return render(request, 'pagamentos/form.html', {'form': form, 'titulo': 'Editar Pagamento'})
 
-@login_required
+
+@permission_required('pagamentos.delete_pagamento', raise_exception=True)
 def pagamento_delete(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
     if request.method == 'POST':

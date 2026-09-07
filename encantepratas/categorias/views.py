@@ -13,7 +13,7 @@ def categoria_detail(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     return render(request, 'categorias/detail.html', {'categoria': categoria})
 
-@permission_required
+@permission_required ('categorias.add_categoria', raise_exception=True)
 def categoria_create(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
@@ -25,7 +25,7 @@ def categoria_create(request):
         form = CategoriaForm()
     return render(request, 'categorias/form.html', {'form': form, 'titulo': 'Nova Categoria'})
 
-@permission_required
+@permission_required('categorias.change_categoria', raise_exception=True)
 def categoria_update(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == 'POST':
@@ -38,7 +38,7 @@ def categoria_update(request, pk):
         form = CategoriaForm(instance=categoria)
     return render(request, 'categorias/form.html', {'form': form, 'titulo': 'Editar Categoria'})
 
-@permission_required
+@permission_required('categorias.delete_categoria', raise_exception=True)
 def categoria_delete(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == 'POST':

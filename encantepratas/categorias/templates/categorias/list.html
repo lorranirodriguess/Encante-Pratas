@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Categorias</h1>
-<a href="{% url 'categoria_create' %}">+ Nova categoria</a>
+{% if perms.categorias.add_categoria %}
+    <a href="{% url 'categoria_create' %}">+ Nova categoria</a>
+{% endif %}
 <ul>
 {% for categoria in categorias %}
     <li>

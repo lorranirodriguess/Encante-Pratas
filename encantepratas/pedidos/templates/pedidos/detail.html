@@ -14,7 +14,11 @@
 {% endfor %}
 </ul>
 
-<a href="{% url 'pedido_update' pedido.pk %}">Editar</a> |
-<a href="{% url 'pedido_delete' pedido.pk %}">Excluir</a> |
+{% if perms.pedidos.change_pedido %}
+    <a href="{% url 'pedido_update' pedido.pk %}">Editar</a> |
+{% endif %}
+{% if perms.pedidos.delete_pedido %}
+    <a href="{% url 'pedido_delete' pedido.pk %}">Excluir</a> |
+{% endif %}
 <a href="{% url 'pedido_list' %}">Voltar</a>
 {% endblock %}

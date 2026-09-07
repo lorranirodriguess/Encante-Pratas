@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Produtos</h1>
-<a href="{% url 'produto_create' %}">+ Novo produto</a>
+{% if perms.produtos.add_produto %}
+    <a href="{% url 'produto_create' %}">+ Novo produto</a>
+{% endif %}
 <ul>
 {% for produto in produtos %}
     <li>
