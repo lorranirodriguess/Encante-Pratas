@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>Pedidos</h1>
-<a href="{% url 'pedido_create' %}">+ Novo pedido</a>
+{% if user.usuario %}<a href="{% url 'pedido_create' %}">+ Novo pedido</a>{% endif %}
 <ul>
 {% for pedido in pedidos %}
     <li>
@@ -12,4 +13,5 @@
     <li>Nenhum pedido cadastrado.</li>
 {% endfor %}
 </ul>
+</div></section>
 {% endblock %}

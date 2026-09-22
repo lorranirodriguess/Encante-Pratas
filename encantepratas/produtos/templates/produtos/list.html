@@ -1,17 +1,37 @@
 {% extends 'base.html' %}
+{% block title %}Produtos — Encante Pratas{% endblock %}
 {% block content %}
-<h1>Produtos</h1>
-{% if perms.produtos.add_produto %}
-    <a href="{% url 'produto_create' %}">+ Novo produto</a>
-{% endif %}
-<ul>
-{% for produto in produtos %}
-    <li>
-        <a href="{% url 'produto_detail' produto.pk %}">{{ produto.nome }}</a>
-        — R$ {{ produto.preco }} — {{ produto.categoria.nome }}
-    </li>
-{% empty %}
-    <li>Nenhum produto cadastrado.</li>
-{% endfor %}
-</ul>
+<section class="hero">
+  <div class="container text-center">
+    <h1>Encante-se com a prata</h1>
+    <p class="lead text-secondary mx-auto" style="max-width: 650px">Encontre peças de prata para cada ocasião.</p>
+  </div>
+</section>
+<section class="section-space">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="h3 fw-bold mb-0">Produtos</h2>
+      {% if perms.produtos.add_produto %}<a class="btn btn-bloom" href="{% url 'produto_create' %}">Novo produto</a>{% endif %}
+    </div>
+    {% if query %}<p class="text-secondary">Resultados para “{{ query }}”</p>{% endif %}
+    <div id="productGrid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for produto in produtos %}
+        <div class="col" data-product-name="{{ produto.nome|lower }}">
+          <article class="card h-100 shadow-sm product-card">
+            <div class="product-image-wrap d-flex align-items-center justify-content-center"><i class="bi bi-gem display-3 text-secondary" aria-hidden="true"></i></div>
+            <div class="card-body d-flex flex-column p-3">
+              <a class="text-decoration-none text-dark" href="{% url 'produto_detail' produto.pk %}"><h3 class="product-title">{{ produto.nome }}</h3></a>
+              <p class="small text-secondary mb-1">{{ produto.categoria.nome }}</p>
+              <strong class="fs-5 my-3">R$ {{ produto.preco }}</strong>
+              <a class="btn btn-bloom mt-auto" href="{% url 'produto_detail' produto.pk %}">Ver detalhes</a>
+            </div>
+          </article>
+        </div>
+      {% empty %}
+        <div class="col-12 text-center py-5"><h3 class="h5">Nenhum produto encontrado</h3><p class="text-secondary">Tente outra busca.</p></div>
+      {% endfor %}
+    </div>
+    <p id="searchEmpty" class="text-center text-secondary py-5 d-none">Nenhum produto corresponde à busca.</p>
+  </div>
+</section>
 {% endblock %}

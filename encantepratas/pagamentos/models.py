@@ -2,26 +2,28 @@ from django.db import models
 from pedidos.models import Pedido
 
 
+FORMA_PAGAMENTO_CHOICES = [
+    ('cartao_credito', 'Cartão de Crédito'),
+    ('cartao_debito', 'Cartão de Débito'),
+    ('pix', 'Pix'),
+    ('boleto', 'Boleto'),
+]
+PAGAMENTO_STATUS_CHOICES = [
+    ('pendente', 'Pendente'),
+    ('aprovado', 'Aprovado'),
+    ('recusado', 'Recusado'),
+    ('estornado', 'Estornado'),
+]
+
+
 class Pagamento(models.Model):
-    FORMA_CHOICES = [
-        ('cartao_credito', 'Cartão de Crédito'),
-        ('cartao_debito', 'Cartão de Débito'),
-        ('pix', 'Pix'),
-        ('boleto', 'Boleto'),
-    ]
-    STATUS_CHOICES = [
-        ('pendente', 'Pendente'),
-        ('aprovado', 'Aprovado'),
-        ('recusado', 'Recusado'),
-        ('estornado', 'Estornado'),
-    ]
 
     pedido = models.OneToOneField(
         Pedido, on_delete=models.CASCADE, related_name='pagamento'
     )
-    forma_pagamento = models.CharField(max_length=20, choices=FORMA_CHOICES)
+    forma_pagamento = models.CharField(max_length=20, choices=FORMA_PAGAMENTO_CHOICES)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    status = models.CharField(max_length=20, choices=PAGAMENTO_STATUS_CHOICES, default='pendente')
     data_pagamento = models.DateTimeField(auto_now_add=True)
 
     class Meta:

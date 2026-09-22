@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>{{ titulo }}</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <h3>Itens</h3>
+    {{ formset.non_form_errors }}
     {{ formset.management_form }}
     {% for item_form in formset %}
         <div>{{ item_form.as_p }}</div>
@@ -12,4 +14,5 @@
     <button type="submit">Salvar</button>
 </form>
 <a href="{% url 'pedido_list' %}">Cancelar</a>
+</div></section>
 {% endblock %}

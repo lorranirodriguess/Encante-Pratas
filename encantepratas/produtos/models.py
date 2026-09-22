@@ -2,17 +2,20 @@ from django.db import models
 from categorias.models import Categoria
 
 
+MATERIAL_CHOICES = [
+    ('prata_925', 'Prata 925'),
+    ('prata_950', 'Prata 950'),
+    ('prata_banhada_ouro', 'Prata banhada a ouro'),
+    ('prata_oxidada', 'Prata oxidada'),
+]
+
+
 class Produto(models.Model):
-    MATERIAL_CHOICES = [
-        ('prata_925', 'Prata 925'),
-        ('prata_950', 'Prata 950'),
-        ('prata_banhada_ouro', 'Prata banhada a ouro'),
-        ('prata_oxidada', 'Prata oxidada'),
-    ]
 
     categoria = models.ForeignKey(
         Categoria, on_delete=models.PROTECT, related_name='produtos'
     )
+    imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
     nome = models.CharField(max_length=150)
     descricao = models.TextField(blank=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)

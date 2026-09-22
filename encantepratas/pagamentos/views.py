@@ -12,14 +12,14 @@ def pagamento_list(request):
     if request.user.has_perm('pagamentos.view_pagamento'):
         pagamentos = Pagamento.objects.select_related('pedido').all()
     else:
-        pagamentos = Pagamento.objects.filter(pedido__cliente=request.user.usuario)
+        pagamentos = Pagamento.objects.filter(pedido__cliente_id=request.user.pk)
     return render(request, 'pagamentos/list.html', {'pagamentos': pagamentos})
 
 
 @login_required
 def pagamento_detail(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
-    if pagamento.pedido.cliente != request.user.usuario and not request.user.has_perm('pagamentos.view_pagamento'):
+    if pagamento.pedido.cliente_id != request.user.pk and not request.user.has_perm('pagamentos.view_pagamento'):
         raise PermissionDenied
     return render(request, 'pagamentos/detail.html', {'pagamento': pagamento})
 

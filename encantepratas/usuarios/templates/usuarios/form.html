@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>{{ titulo }}</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Salvar</button>
 </form>
-<a href="{% url 'usuario_list' %}">Cancelar</a>
+{% if form.instance.pk %}<a href="{% url 'usuario_detail' form.instance.pk %}">Cancelar</a>{% else %}<a href="{% url 'produto_list' %}">Cancelar</a>{% endif %}
+</div></section>
 {% endblock %}

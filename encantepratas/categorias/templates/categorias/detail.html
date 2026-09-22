@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>{{ categoria.nome }}</h1>
 <p>{{ categoria.descricao }}</p>
 <p>Status: {% if categoria.ativo %}Ativa{% else %}Inativa{% endif %}</p>
@@ -11,4 +12,5 @@
     <a href="{% url 'categoria_delete' categoria.pk %}">Excluir</a> |
 {% endif %}
 <a href="{% url 'categoria_list' %}">Voltar</a>
+</div></section>
 {% endblock %}

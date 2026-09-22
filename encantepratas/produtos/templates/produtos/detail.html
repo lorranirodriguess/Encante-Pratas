@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>{{ produto.nome }}</h1>
 <p>{{ produto.descricao }}</p>
 <p>Categoria: {{ produto.categoria.nome }}</p>
@@ -14,4 +15,5 @@
     <a href="{% url 'produto_delete' produto.pk %}">Excluir</a> |
 {% endif %}
 <a href="{% url 'produto_list' %}">Voltar</a>
+</div></section>
 {% endblock %}

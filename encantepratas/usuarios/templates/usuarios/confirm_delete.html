@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>Excluir usuário "{{ usuario.username }}"?</h1>
 <form method="post">
     {% csrf_token %}
     <button type="submit">Confirmar exclusão</button>
 </form>
 <a href="{% url 'usuario_detail' usuario.pk %}">Cancelar</a>
+</div></section>
 {% endblock %}

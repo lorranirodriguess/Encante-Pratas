@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>{{ titulo }}</h1>
 <form method="post">
     {% csrf_token %}
@@ -7,4 +8,5 @@
     <button type="submit">Salvar</button>
 </form>
 <a href="{% url 'categoria_list' %}">Cancelar</a>
+</div></section>
 {% endblock %}

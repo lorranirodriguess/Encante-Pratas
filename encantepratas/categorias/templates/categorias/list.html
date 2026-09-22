@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>Categorias</h1>
 {% if perms.categorias.add_categoria %}
     <a href="{% url 'categoria_create' %}">+ Nova categoria</a>
@@ -14,4 +15,5 @@
     <li>Nenhuma categoria cadastrada.</li>
 {% endfor %}
 </ul>
+</div></section>
 {% endblock %}

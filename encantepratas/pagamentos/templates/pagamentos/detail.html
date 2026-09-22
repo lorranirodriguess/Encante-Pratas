@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>Pagamento #{{ pagamento.pk }}</h1>
 <p>Pedido: #{{ pagamento.pedido.pk }} ({{ pagamento.pedido.cliente }})</p>
 <p>Forma: {{ pagamento.get_forma_pagamento_display }}</p>
@@ -14,4 +15,5 @@
     <a href="{% url 'pagamento_delete' pagamento.pk %}">Excluir</a> |
 {% endif %}
 <a href="{% url 'pagamento_list' %}">Voltar</a>
+</div></section>
 {% endblock %}

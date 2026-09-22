@@ -1,22 +1,130 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Loja de Prata{% endblock %}</title>
-</head>
-<body>
-    {% if user.is_authenticated %}
-        <p>Olá, {{ user.username }} | <a href="{% url 'logout' %}">Sair</a></p>
-    {% else %}
-        <p><a href="{% url 'login' %}">Entrar</a></p>
-    {% endif %}
-
-    {% if messages %}
-        <ul>
-        {% for message in messages %}<li>{{ message }}</li>{% endfor %}
-        </ul>
-    {% endif %}
-
-    {% block content %}{% endblock %}
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Encante Pratas{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg bg-white bg-opacity-75 border-bottom sticky-top"
+    >
+      <div class="container py-2">
+        <a class="navbar-brand" href="{% url 'produto_list' %}"
+          >ENCANTE<span class="text-bloom">PRATAS</span></a
+        ><button
+          class="navbar-toggler"
+          data-bs-toggle="collapse"
+          data-bs-target="#nav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav me-lg-auto ms-lg-4">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'produto_list' %}">Produtos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'categoria_list' %}">Categorias</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'pedido_list' %}">Pedidos</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'pagamento_list' %}">Pagamentos</a></li>
+            {% if user.usuario %}<li class="nav-item"><a class="nav-link" href="{% url 'usuario_detail' user.pk %}">Minha conta</a></li>{% endif %}
+            {% endif %}
+          </ul>
+          <form class="d-flex my-3 my-lg-0 me-lg-3" role="search" action="{% url 'produto_list' %}" method="get">
+            <input
+              id="productSearch"
+              name="q"
+              class="form-control rounded-pill"
+              type="search"
+              value="{{ request.GET.q|default:'' }}"
+              placeholder="Buscar produtos..."
+            />
+          </form>
+          <div class="d-flex gap-2">
+            {% if user.is_authenticated %}
+            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button class="btn btn-light" type="submit">Sair</button></form>
+            {% else %}
+            <a class="btn btn-light" href="{% url 'login' %}">Entrar</a
+            ><a class="btn btn-bloom" href="{% url 'usuario_create' %}">Cadastrar</a>
+            {% endif %}
+            <a
+              class="btn btn-light position-relative"
+              href="{% url 'pedido_list' %}"
+              aria-label="Pedidos"
+            ><i class="bi bi-receipt"></i></a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <main>
+      {% if messages %}
+      <div class="container pt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="border-top">
+      <section class="py-5 border-bottom">
+        <div class="container text-center">
+          <h2 class="h3 fw-bold">Encontre sua próxima peça</h2>
+          <p class="text-secondary">Explore nossa coleção de produtos em prata.</p>
+          <a class="btn btn-bloom" href="{% url 'produto_list' %}">Ver produtos</a>
+        </div>
+      </section>
+      <div class="container py-5">
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <a class="navbar-brand" href="{% url 'produto_list' %}"
+              >ENCANTE<span class="text-bloom">PRATAS</span></a
+            >
+            <p class="text-secondary mt-3">
+              Peças de prata para todos os momentos.
+            </p>
+          </div>
+          <div class="col-6 col-lg-2 footer-links">
+            <h3 class="footer-heading">Loja</h3>
+            <p><a href="{% url 'produto_list' %}">Produtos</a></p>
+            <p><a href="{% url 'categoria_list' %}">Categorias</a></p>
+          </div>
+          <div class="col-6 col-lg-2 footer-links">
+            <h3 class="footer-heading">Conta</h3>
+            {% if user.is_authenticated %}<p><a href="{% url 'pedido_list' %}">Meus pedidos</a></p>{% else %}<p><a href="{% url 'login' %}">Entrar</a></p>{% endif %}
+          </div>
+          <div class="col-6 col-lg-2 footer-links">
+            <h3 class="footer-heading">Atendimento</h3>
+            <p><a href="{% url 'usuario_create' %}">Criar conta</a></p>
+          </div>
+          <div class="col-6 col-lg-2 footer-links">
+            <h3 class="footer-heading">Pedidos</h3>
+            <p><a href="{% url 'pedido_list' %}">Acompanhar</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="border-top">
+        <div class="container py-3 small text-secondary">
+          © {% now "Y" %} Encante Pratas.
+        </div>
+      </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
 </html>

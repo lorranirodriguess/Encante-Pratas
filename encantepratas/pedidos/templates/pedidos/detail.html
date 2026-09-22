@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>Pedido #{{ pedido.pk }}</h1>
 <p>Cliente: {{ pedido.cliente }}</p>
 <p>Status: {{ pedido.get_status_display }}</p>
@@ -21,4 +22,5 @@
     <a href="{% url 'pedido_delete' pedido.pk %}">Excluir</a> |
 {% endif %}
 <a href="{% url 'pedido_list' %}">Voltar</a>
+</div></section>
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db.models import ProtectedError
 from .models import Categoria
 from .forms import CategoriaForm
 
@@ -42,7 +43,11 @@ def categoria_update(request, pk):
 def categoria_delete(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == 'POST':
-        categoria.delete()
+        try:
+            categoria.delete()
+        except ProtectedError:
+            messages.error(request, 'Esta categoria possui produtos e não pode ser excluída.')
+            return redirect('categoria_detail', pk=pk)
         messages.success(request, 'Categoria removida.')
         return redirect('categoria_list')
     return render(request, 'categorias/confirm_delete.html', {'categoria': categoria})

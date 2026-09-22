@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="section-space"><div class="container">
 <h1>Usuários</h1>
 <a href="{% url 'usuario_create' %}">+ Novo usuário</a>
 <ul>
@@ -9,4 +10,5 @@
     <li>Nenhum usuário cadastrado.</li>
 {% endfor %}
 </ul>
+</div></section>
 {% endblock %}
