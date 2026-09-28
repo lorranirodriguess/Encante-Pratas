@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied
-
 from .models import Pagamento
 from .forms import PagamentoForm, PagamentoUpdateForm
+from usuarios.models import Usuario
 
 
 @login_required
@@ -23,7 +23,7 @@ def pagamento_detail(request, pk):
         raise PermissionDenied
     return render(request, 'pagamentos/detail.html', {'pagamento': pagamento})
 
-
+@login_required
 @permission_required('pagamentos.add_pagamento', raise_exception=True)
 def pagamento_create(request):
     if request.method == 'POST':
@@ -38,7 +38,7 @@ def pagamento_create(request):
         form = PagamentoForm()
     return render(request, 'pagamentos/form.html', {'form': form, 'titulo': 'Novo Pagamento'})
 
-
+@login_required
 @permission_required('pagamentos.change_pagamento', raise_exception=True)
 def pagamento_update(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
@@ -52,7 +52,7 @@ def pagamento_update(request, pk):
         form = PagamentoUpdateForm(instance=pagamento)
     return render(request, 'pagamentos/form.html', {'form': form, 'titulo': 'Editar Pagamento'})
 
-
+@login_required
 @permission_required('pagamentos.delete_pagamento', raise_exception=True)
 def pagamento_delete(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
@@ -61,3 +61,22 @@ def pagamento_delete(request, pk):
         messages.success(request, 'Pagamento removido.')
         return redirect('pagamento_list')
     return render(request, 'pagamentos/confirm_delete.html', {'pagamento': pagamento})
+
+
+@login_required
+def pagamento_confirmar(request, pk):
+    pagamento = get_object_or_404(Pagamento, pk=pk)
+    cliente = Usuario.objects.filter(pk=request.user.pk).first()
+
+    if pagamento.pedido.cliente != cliente and not request.user.has_perm('pagamentos.view_pagamento'):
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        pagamento.status = 'aprovado'
+        pagamento.save()
+        pagamento.pedido.status = 'confirmado'
+        pagamento.pedido.save()
+        messages.success(request, 'Pagamento confirmado! Seu pedido foi processado.')
+        return redirect('pedido_detail', pk=pagamento.pedido.pk)
+
+    return render(request, 'pagamentos/confirmar.html', {'pagamento': pagamento})

@@ -12,7 +12,7 @@ from django.views.decorators.http import require_POST
 from .models import Usuario
 from .forms import UsuarioForm, UsuarioUpdateForm
 
-
+@login_required
 @permission_required('usuarios.view_usuario', raise_exception=True)
 def usuario_list(request):
     usuarios = Usuario.objects.all()

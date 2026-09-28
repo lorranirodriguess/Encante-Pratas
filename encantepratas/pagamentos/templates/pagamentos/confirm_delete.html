@@ -1,13 +1,22 @@
 {% extends 'base.html' %}
+{% block title %}Excluir pagamento — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>Excluir pagamento #{{ pagamento.pk }}?</h1>
-<p>Pedido: #{{ pagamento.pedido.pk }}</p>
-<p>Valor: R$ {{ pagamento.valor }}</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Confirmar exclusão</button>
-</form>
-<a href="{% url 'pagamento_detail' pagamento.pk %}">Cancelar</a>
-</div></section>
+<section class="page-header">
+  <div class="container"><h1 class="h3 fw-bold mb-0">Excluir pagamento</h1></div>
+</section>
+<section class="section-space">
+  <div class="container" style="max-width: 34rem;">
+    <div class="alert alert-warning d-flex gap-2 align-items-start">
+      <i class="bi bi-exclamation-triangle fs-4"></i>
+      <div>Tem certeza que deseja excluir o <strong>Pagamento #{{ pagamento.pk }}</strong>? Essa ação não pode ser desfeita.</div>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-outline-danger">Confirmar exclusão</button>
+        <a class="btn btn-outline-secondary" href="{% url 'pagamento_detail' pagamento.pk %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>
 {% endblock %}

@@ -39,6 +39,12 @@
               <a class="nav-link" href="{% url 'categoria_list' %}">Categorias</a>
             </li>
             {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'carrinho_view' %}">
+                <i class="bi bi-cart3"></i> Carrinho
+                {% if carrinho_qtd %}<span class="badge text-bg-danger">{{ carrinho_qtd }}</span>{% endif %}
+              </a>
+            </li>
             <li class="nav-item"><a class="nav-link" href="{% url 'pedido_list' %}">Pedidos</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'pagamento_list' %}">Pagamentos</a></li>
             {% if user.usuario %}<li class="nav-item"><a class="nav-link" href="{% url 'usuario_detail' user.pk %}">Minha conta</a></li>{% endif %}

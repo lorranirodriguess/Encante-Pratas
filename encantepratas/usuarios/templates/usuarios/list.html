@@ -1,14 +1,44 @@
 {% extends 'base.html' %}
+{% block title %}Usuários — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>Usuários</h1>
-<a href="{% url 'usuario_create' %}">+ Novo usuário</a>
-<ul>
-{% for usuario in usuarios %}
-    <li><a href="{% url 'usuario_detail' usuario.pk %}">{{ usuario.username }}</a> — {{ usuario.cidade }}</li>
-{% empty %}
-    <li>Nenhum usuário cadastrado.</li>
-{% endfor %}
-</ul>
-</div></section>
+<section class="page-header">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div>
+      <h1 class="h3 fw-bold mb-1">Usuários</h1>
+      <p class="text-secondary mb-0">Clientes e equipe cadastrados na loja.</p>
+    </div>
+    <a class="btn btn-bloom" href="{% url 'usuario_create' %}"><i class="bi bi-plus-lg me-1"></i>Novo usuário</a>
+  </div>
+</section>
+<section class="section-space">
+  <div class="container">
+    {% if usuarios %}
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr class="text-secondary small text-uppercase">
+              <th>Usuário</th>
+              <th>Cidade</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for usuario in usuarios %}
+              <tr>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.cidade }}</td>
+                <td class="text-end"><a class="btn btn-outline-dark btn-sm" href="{% url 'usuario_detail' usuario.pk %}">Ver</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-people display-3 text-secondary" aria-hidden="true"></i>
+        <h2 class="h5 mt-3">Nenhum usuário cadastrado</h2>
+      </div>
+    {% endif %}
+  </div>
+</section>
 {% endblock %}

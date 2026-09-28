@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import ProtectedError
@@ -27,10 +27,11 @@ def produto_detail(request, pk):
         'relacionados': relacionados,
     })
 
+@login_required
 @permission_required('produtos.add_produto', raise_exception=True)
 def produto_create(request):
     if request.method == 'POST':
-        form = ProdutoForm(request.POST)
+        form = ProdutoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, 'Produto criado com sucesso!')
@@ -39,11 +40,12 @@ def produto_create(request):
         form = ProdutoForm()
     return render(request, 'produtos/form.html', {'form': form, 'titulo': 'Novo Produto'})
 
+@login_required
 @permission_required('produtos.change_produto', raise_exception=True)
 def produto_update(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == 'POST':
-        form = ProdutoForm(request.POST, instance=produto)
+        form = ProdutoForm(request.POST, request.FILES, instance=produto)
         if form.is_valid():
             form.save()
             messages.success(request, 'Produto atualizado!')
@@ -52,6 +54,7 @@ def produto_update(request, pk):
         form = ProdutoForm(instance=produto)
     return render(request, 'produtos/form.html', {'form': form, 'titulo': 'Editar Produto'})
 
+@login_required
 @permission_required('produtos.delete_produto', raise_exception=True)
 def produto_delete(request, pk):
     produto = get_object_or_404(Produto, pk=pk)

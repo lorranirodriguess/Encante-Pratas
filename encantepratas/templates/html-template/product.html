@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}{{ produto.nome }} — Encante Pratas{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb mb-0 small">
+      <li class="breadcrumb-item"><a href="{% url 'produto_list' %}">Produtos</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'categoria_detail' produto.categoria.pk %}">{{ produto.categoria.nome }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ produto.nome }}</li>
+    </ol></nav>
+  </div>
+</section>
+<section class="section-space">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-md-6">
+        <div class="product-image-wrap rounded-4 d-flex align-items-center justify-content-center" style="aspect-ratio:1;">
+          {% if produto.imagem %}
+            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-detail-image">
+          {% else %}
+            <i class="bi bi-gem display-1 text-secondary" aria-hidden="true"></i>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        {% if not produto.ativo %}<span class="badge text-bg-secondary mb-2">Indisponível</span>{% endif %}
+        <h1 class="h2 fw-bold">{{ produto.nome }}</h1>
+        <p class="text-secondary mb-1">{{ produto.categoria.nome }} · {{ produto.get_material_display }}</p>
+        <p class="fs-3 fw-bold text-bloom my-3">R$ {{ produto.preco }}</p>
+        <p>{{ produto.descricao|default:"Sem descrição cadastrada." }}</p>
+        {% if produto.estoque > 0 %}
+          <p class="text-success small"><i class="bi bi-check-circle me-1"></i>{{ produto.estoque }} unidade{{ produto.estoque|pluralize }} em estoque</p>
+        {% else %}
+          <p class="text-danger small"><i class="bi bi-x-circle me-1"></i>Fora de estoque</p>
+        {% endif %}
+
+        <div class="d-flex gap-2 flex-wrap mt-4">
+          
+          {% if user.is_authenticated %}
+            {% if produto.ativo and produto.estoque > 0 %}
+              <form method="post" action="{% url 'adicionar_ao_carrinho' produto.pk %}" class="d-flex align-items-center gap-2 flex-wrap">
+                {% csrf_token %}
+                <input type="number" name="quantidade" value="1" min="1" max="{{ produto.estoque }}" class="form-control" style="width: 5rem;">
+                <button type="submit" class="btn btn-outline-dark"><i class="bi bi-cart-plus me-1"></i>Adicionar ao carrinho</button>
+                <button type="submit" formaction="{% url 'comprar_agora' produto.pk %}" class="btn btn-bloom"><i class="bi bi-lightning-charge me-1"></i>Comprar agora</button>
+              </form>
+            {% else %}
+              <button class="btn btn-secondary" disabled>Fora de estoque</button>
+            {% endif %}
+          {% else %}
+            <a class="btn btn-bloom" href="{% url 'login' %}?next={{ request.path }}"><i class="bi bi-bag-plus me-1"></i>Entrar para comprar</a>
+          {% endif %}
+
+          {% if perms.produtos.change_produto %}
+            <a class="btn btn-outline-dark" href="{% url 'produto_update' produto.pk %}"><i class="bi bi-pencil me-1"></i>Editar</a>
+          {% endif %}
+          {% if perms.produtos.delete_produto %}
+            <a class="btn btn-outline-danger" href="{% url 'produto_delete' produto.pk %}"><i class="bi bi-trash me-1"></i>Excluir</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if relacionados %}
+      <h2 class="h4 fw-bold mt-5 pt-4 border-top">Você também pode gostar</h2>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-1">
+        {% for item in relacionados %}
+          <div class="col">
+            <article class="card h-100 shadow-sm product-card">
+              <div class="product-image-wrap d-flex align-items-center justify-content-center">
+                {% if item.imagem %}
+                  <img src="{{ item.imagem.url }}" alt="{{ item.nome }}" class="product-image">
+                {% else %}
+                  <i class="bi bi-gem display-4 text-secondary" aria-hidden="true"></i>
+                {% endif %}
+              </div>
+              <div class="card-body d-flex flex-column p-3">
+                <a class="text-decoration-none text-dark" href="{% url 'produto_detail' item.pk %}"><h3 class="product-title">{{ item.nome }}</h3></a>
+                <strong class="fs-6 my-2">R$ {{ item.preco }}</strong>
+                <a class="btn btn-outline-dark btn-sm mt-auto" href="{% url 'produto_detail' item.pk %}">Ver detalhes</a>
+              </div>
+            </article>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Finalizar compra — Encante Pratas{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div class="container"><h1 class="h3 fw-bold mb-0">Finalizar compra</h1></div>
+</section>
+<section class="section-space">
+  <div class="container">
+    {% if erro_estoque %}
+      <div class="alert alert-danger" style="max-width: 42rem;">{{ erro_estoque }}</div>
+    {% endif %}
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead><tr class="text-secondary small text-uppercase"><th>Produto</th><th class="text-center">Qtd.</th><th class="text-end">Subtotal</th></tr></thead>
+            <tbody>
+              {% for item in itens %}
+                <tr><td>{{ item.produto.nome }}</td><td class="text-center">{{ item.quantidade }}</td><td class="text-end">R$ {{ item.subtotal }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              <label class="form-label fw-semibold" for="endereco">Endereço de entrega</label>
+              <textarea class="form-control mb-3" id="endereco" name="endereco_entrega" rows="3">{{ endereco_padrao }}</textarea>
+
+              <label class="form-label fw-semibold" for="forma_pagamento">Forma de pagamento</label>
+              <select class="form-select mb-3" id="forma_pagamento" name="forma_pagamento">
+                <option value="pix">Pix</option>
+                <option value="cartao_credito">Cartão de Crédito</option>
+                <option value="cartao_debito">Cartão de Débito</option>
+                <option value="boleto">Boleto</option>
+              </select>
+
+              <p class="fs-4 fw-bold">Total: R$ {{ total }}</p>
+              <button type="submit" class="btn btn-bloom w-100" {% if erro_estoque %}disabled{% endif %}>
+                <i class="bi bi-check-circle me-1"></i>Confirmar pedido
+              </button>
+            </form>
+          </div>
+        </div>
+        <a class="btn btn-outline-secondary btn-sm mt-2" href="{% url 'carrinho_view' %}">Voltar ao carrinho</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

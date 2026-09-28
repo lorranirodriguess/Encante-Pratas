@@ -7,4 +7,5 @@ urlpatterns = [
     path('novo/', views.pagamento_create, name='pagamento_create'),
     path('<int:pk>/editar/', views.pagamento_update, name='pagamento_update'),
     path('<int:pk>/excluir/', views.pagamento_delete, name='pagamento_delete'),
+    path('<int:pk>/confirmar/', views.pagamento_confirmar, name='pagamento_confirmar'),
 ]

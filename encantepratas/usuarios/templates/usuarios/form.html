@@ -1,12 +1,26 @@
 {% extends 'base.html' %}
+{% block title %}{{ titulo }} — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>{{ titulo }}</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
-{% if form.instance.pk %}<a href="{% url 'usuario_detail' form.instance.pk %}">Cancelar</a>{% else %}<a href="{% url 'produto_list' %}">Cancelar</a>{% endif %}
-</div></section>
+<section class="page-header">
+  <div class="container"><h1 class="h3 fw-bold mb-0">{{ titulo }}</h1></div>
+</section>
+<section class="section-space">
+  <div class="container">
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger" style="max-width: 42rem;">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-bloom">Salvar</button>
+        {% if form.instance.pk %}
+          <a class="btn btn-outline-secondary" href="{% url 'usuario_detail' form.instance.pk %}">Cancelar</a>
+        {% else %}
+          <a class="btn btn-outline-secondary" href="{% url 'produto_list' %}">Cancelar</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</section>
 {% endblock %}

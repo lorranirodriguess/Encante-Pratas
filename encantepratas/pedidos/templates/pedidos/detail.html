@@ -1,26 +1,77 @@
 {% extends 'base.html' %}
+{% block title %}Pedido #{{ pedido.pk }} — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>Pedido #{{ pedido.pk }}</h1>
-<p>Cliente: {{ pedido.cliente }}</p>
-<p>Status: {{ pedido.get_status_display }}</p>
-<p>Data: {{ pedido.data_pedido }}</p>
-<p>Endereço: {{ pedido.endereco_entrega }}</p>
-<p><strong>Valor total: R$ {{ pedido.valor_total }}</strong></p>
-
-<h3>Itens</h3>
-<ul>
-{% for item in pedido.itens.all %}
-    <li>{{ item.quantidade }}x {{ item.produto.nome }} — R$ {{ item.preco_unitario }} (subtotal: R$ {{ item.subtotal }})</li>
-{% endfor %}
-</ul>
-
-{% if perms.pedidos.change_pedido %}
-    <a href="{% url 'pedido_update' pedido.pk %}">Editar</a> |
-{% endif %}
-{% if perms.pedidos.delete_pedido %}
-    <a href="{% url 'pedido_delete' pedido.pk %}">Excluir</a> |
-{% endif %}
-<a href="{% url 'pedido_list' %}">Voltar</a>
-</div></section>
+<section class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb mb-2 small">
+      <li class="breadcrumb-item"><a href="{% url 'pedido_list' %}">Pedidos</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Pedido #{{ pedido.pk }}</li>
+    </ol></nav>
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+      <h1 class="h3 fw-bold mb-0">Pedido #{{ pedido.pk }}</h1>
+      {% if pedido.status == 'entregue' %}<span class="badge text-bg-success">{{ pedido.get_status_display }}</span>
+      {% elif pedido.status == 'cancelado' %}<span class="badge text-bg-danger">{{ pedido.get_status_display }}</span>
+      {% elif pedido.status == 'pendente' %}<span class="badge text-bg-secondary">{{ pedido.get_status_display }}</span>
+      {% else %}<span class="badge text-bg-warning">{{ pedido.get_status_display }}</span>{% endif %}
+    </div>
+  </div>
+</section>
+<section class="section-space">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <h2 class="h5 fw-bold mb-3">Itens</h2>
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr class="text-secondary small text-uppercase">
+                <th>Produto</th>
+                <th class="text-center">Qtd.</th>
+                <th class="text-end">Preço unit.</th>
+                <th class="text-end">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in pedido.itens.all %}
+                <tr>
+                  <td>{{ item.produto.nome }}</td>
+                  <td class="text-center">{{ item.quantidade }}</td>
+                  <td class="text-end">R$ {{ item.preco_unitario }}</td>
+                  <td class="text-end">R$ {{ item.subtotal }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="text-end fw-bold">Valor total</td>
+                <td class="text-end fw-bold">R$ {{ pedido.valor_total }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h2 class="h6 fw-bold text-uppercase text-secondary">Entrega</h2>
+            <p class="mb-3">{{ pedido.endereco_entrega }}</p>
+            <h2 class="h6 fw-bold text-uppercase text-secondary">Cliente</h2>
+            <p class="mb-3">{{ pedido.cliente }}</p>
+            <h2 class="h6 fw-bold text-uppercase text-secondary">Data do pedido</h2>
+            <p class="mb-0">{{ pedido.data_pedido }}</p>
+          </div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap mt-3">
+          {% if perms.pedidos.change_pedido %}
+            <a class="btn btn-outline-dark btn-sm" href="{% url 'pedido_update' pedido.pk %}"><i class="bi bi-pencil me-1"></i>Editar</a>
+          {% endif %}
+          {% if perms.pedidos.delete_pedido %}
+            <a class="btn btn-outline-danger btn-sm" href="{% url 'pedido_delete' pedido.pk %}"><i class="bi bi-trash me-1"></i>Excluir</a>
+          {% endif %}
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'pedido_list' %}">Voltar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}

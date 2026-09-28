@@ -1,17 +1,57 @@
 {% extends 'base.html' %}
+{% block title %}Pedidos — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>Pedidos</h1>
-{% if user.usuario %}<a href="{% url 'pedido_create' %}">+ Novo pedido</a>{% endif %}
-<ul>
-{% for pedido in pedidos %}
-    <li>
-        <a href="{% url 'pedido_detail' pedido.pk %}">Pedido #{{ pedido.pk }}</a>
-        — {{ pedido.cliente }} — {{ pedido.status }} — R$ {{ pedido.valor_total }}
-    </li>
-{% empty %}
-    <li>Nenhum pedido cadastrado.</li>
-{% endfor %}
-</ul>
-</div></section>
+<section class="page-header">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div>
+      <h1 class="h3 fw-bold mb-1">Pedidos</h1>
+      <p class="text-secondary mb-0">Acompanhe seus pedidos e status de entrega.</p>
+    </div>
+    {% if user.usuario %}
+      <a class="btn btn-bloom" href="{% url 'pedido_create' %}"><i class="bi bi-plus-lg me-1"></i>Novo pedido</a>
+    {% endif %}
+  </div>
+</section>
+<section class="section-space">
+  <div class="container">
+    {% if pedidos %}
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr class="text-secondary small text-uppercase">
+              <th>Itens</th>
+              {% if perms.pedidos.view_pedido %}<th>Cliente</th>{% endif %}
+              <th>Status</th>
+              <th class="text-end">Valor total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pedido in pedidos %}
+              <tr>
+                <td>
+                  {% for item in pedido.itens.all %}{{ item.quantidade }}x {{ item.produto.nome }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                </td>
+                {% if perms.pedidos.view_pedido %}<td>{{ pedido.cliente }}</td>{% endif %}
+                <td>
+                  {% if pedido.status == 'entregue' %}<span class="badge text-bg-success">{{ pedido.get_status_display }}</span>
+                  {% elif pedido.status == 'cancelado' %}<span class="badge text-bg-danger">{{ pedido.get_status_display }}</span>
+                  {% elif pedido.status == 'pendente' %}<span class="badge text-bg-secondary">{{ pedido.get_status_display }}</span>
+                  {% else %}<span class="badge text-bg-warning">{{ pedido.get_status_display }}</span>{% endif %}
+                </td>
+                <td class="text-end">R$ {{ pedido.valor_total }}</td>
+                <td class="text-end"><a class="btn btn-outline-dark btn-sm" href="{% url 'pedido_detail' pedido.pk %}">Ver</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-receipt display-3 text-secondary" aria-hidden="true"></i>
+        <h2 class="h5 mt-3">Nenhum pedido cadastrado</h2>
+      </div>
+    {% endif %}
+  </div>
+</section>
 {% endblock %}

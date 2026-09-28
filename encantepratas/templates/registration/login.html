@@ -1,13 +1,37 @@
 {% extends 'base.html' %}
+{% block title %}Entrar — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>Entrar</h1>
-<form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}">
-    <p><label>Usuário: <input type="text" name="username" required></label></p>
-    <p><label>Senha: <input type="password" name="password" required></label></p>
-    <button type="submit">Entrar</button>
-</form>
-</div></section>
-{% endblock %}
+<section class="page-header">
+  <div class="container text-center">
+    <h1 class="h3 fw-bold mb-1">Entrar na sua conta</h1>
+    <p class="text-secondary mb-0">Acompanhe seus pedidos e finalize compras mais rápido.</p>
+  </div>
+</section>
+<section class="section-space">
+  <div class="container d-flex justify-content-center">
+    <div class="card shadow-sm" style="max-width: 26rem; width: 100%;">
+      <div class="card-body p-4">
+        {% if form.errors %}
+          <div class="alert alert-danger py-2 small">Usuário ou senha inválidos.</div>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}">
+          <div class="mb-3">
+            <label class="form-label fw-semibold" for="id_username">Usuário</label>
+            <input type="text" name="username" id="id_username" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold" for="id_password">Senha</label>
+            <input type="password" name="password" id="id_password" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-bloom w-100">Entrar</button>
+        </form>
+        <p class="text-center small text-secondary mt-3 mb-0">
+          Ainda não tem conta? <a href="{% url 'usuario_create' %}">Cadastre-se</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %} 

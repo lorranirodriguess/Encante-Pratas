@@ -1,19 +1,39 @@
 {% extends 'base.html' %}
+{% block title %}Pagamento #{{ pagamento.pk }} — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>Pagamento #{{ pagamento.pk }}</h1>
-<p>Pedido: #{{ pagamento.pedido.pk }} ({{ pagamento.pedido.cliente }})</p>
-<p>Forma: {{ pagamento.get_forma_pagamento_display }}</p>
-<p>Valor: R$ {{ pagamento.valor }}</p>
-<p>Status: {{ pagamento.get_status_display }}</p>
-<p>Data: {{ pagamento.data_pagamento }}</p>
-
-{% if perms.pagamentos.change_pagamento %}
-    <a href="{% url 'pagamento_update' pagamento.pk %}">Editar</a> |
-{% endif %}
-{% if perms.pagamentos.delete_pagamento %}
-    <a href="{% url 'pagamento_delete' pagamento.pk %}">Excluir</a> |
-{% endif %}
-<a href="{% url 'pagamento_list' %}">Voltar</a>
-</div></section>
+<section class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb mb-2 small">
+      <li class="breadcrumb-item"><a href="{% url 'pagamento_list' %}">Pagamentos</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Pagamento #{{ pagamento.pk }}</li>
+    </ol></nav>
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+      <h1 class="h3 fw-bold mb-0">Pagamento #{{ pagamento.pk }}</h1>
+      {% if pagamento.status == 'aprovado' %}<span class="badge text-bg-success">{{ pagamento.get_status_display }}</span>
+      {% elif pagamento.status == 'recusado' or pagamento.status == 'estornado' %}<span class="badge text-bg-danger">{{ pagamento.get_status_display }}</span>
+      {% else %}<span class="badge text-bg-secondary">{{ pagamento.get_status_display }}</span>{% endif %}
+    </div>
+  </div>
+</section>
+<section class="section-space">
+  <div class="container" style="max-width: 34rem;">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <p><strong>Pedido:</strong> <a href="{% url 'pedido_detail' pagamento.pedido.pk %}">#{{ pagamento.pedido.pk }}</a> ({{ pagamento.pedido.cliente }})</p>
+        <p><strong>Forma de pagamento:</strong> {{ pagamento.get_forma_pagamento_display }}</p>
+        <p><strong>Valor:</strong> R$ {{ pagamento.valor }}</p>
+        <p class="mb-0"><strong>Data:</strong> {{ pagamento.data_pagamento }}</p>
+      </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap mt-3">
+      {% if perms.pagamentos.change_pagamento %}
+        <a class="btn btn-outline-dark btn-sm" href="{% url 'pagamento_update' pagamento.pk %}"><i class="bi bi-pencil me-1"></i>Editar</a>
+      {% endif %}
+      {% if perms.pagamentos.delete_pagamento %}
+        <a class="btn btn-outline-danger btn-sm" href="{% url 'pagamento_delete' pagamento.pk %}"><i class="bi bi-trash me-1"></i>Excluir</a>
+      {% endif %}
+      <a class="btn btn-outline-secondary btn-sm" href="{% url 'pagamento_list' %}">Voltar</a>
+    </div>
+  </div>
+</section>
 {% endblock %}

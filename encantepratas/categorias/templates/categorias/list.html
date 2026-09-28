@@ -1,19 +1,46 @@
 {% extends 'base.html' %}
+{% block title %}Categorias — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>Categorias</h1>
-{% if perms.categorias.add_categoria %}
-    <a href="{% url 'categoria_create' %}">+ Nova categoria</a>
-{% endif %}
-<ul>
-{% for categoria in categorias %}
-    <li>
-        <a href="{% url 'categoria_detail' categoria.pk %}">{{ categoria.nome }}</a>
-        {% if not categoria.ativo %}(inativa){% endif %}
-    </li>
-{% empty %}
-    <li>Nenhuma categoria cadastrada.</li>
-{% endfor %}
-</ul>
-</div></section>
+<section class="page-header">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div>
+      <h1 class="h3 fw-bold mb-1">Categorias</h1>
+      <p class="text-secondary mb-0">Explore nossas categorias e encontre sua peça ideal.</p>
+    </div>
+    {% if perms.categorias.add_categoria %}
+      <a class="btn btn-bloom" href="{% url 'categoria_create' %}"><i class="bi bi-plus-lg me-1"></i>Nova categoria</a>
+    {% endif %}
+  </div>
+</section>
+<section class="section-space">
+  <div class="container">
+    {% if categorias %}
+      <div class="row g-3">
+        {% for categoria in categorias %}
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm product-card">
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h2 class="h5 fw-bold mb-0">{{ categoria.nome }}</h2>
+                  {% if categoria.ativo %}
+                    <span class="badge text-bg-success">Ativa</span>
+                  {% else %}
+                    <span class="badge text-bg-secondary">Inativa</span>
+                  {% endif %}
+                </div>
+                <p class="text-secondary small flex-grow-1">{{ categoria.descricao|default:"Sem descrição." }}</p>
+                <a class="btn btn-outline-dark btn-sm mt-auto" href="{% url 'categoria_detail' categoria.pk %}">Ver detalhes</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-tags display-3 text-secondary" aria-hidden="true"></i>
+        <h2 class="h5 mt-3">Nenhuma categoria cadastrada</h2>
+      </div>
+    {% endif %}
+  </div>
+</section>
 {% endblock %}

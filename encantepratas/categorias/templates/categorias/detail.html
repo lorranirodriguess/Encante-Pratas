@@ -1,16 +1,62 @@
 {% extends 'base.html' %}
+{% block title %}{{ categoria.nome }} — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>{{ categoria.nome }}</h1>
-<p>{{ categoria.descricao }}</p>
-<p>Status: {% if categoria.ativo %}Ativa{% else %}Inativa{% endif %}</p>
+<section class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb mb-2 small">
+      <li class="breadcrumb-item"><a href="{% url 'categoria_list' %}">Categorias</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ categoria.nome }}</li>
+    </ol></nav>
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+      <h1 class="h3 fw-bold mb-0">{{ categoria.nome }}</h1>
+      {% if categoria.ativo %}
+        <span class="badge text-bg-success align-self-start">Ativa</span>
+      {% else %}
+        <span class="badge text-bg-secondary align-self-start">Inativa</span>
+      {% endif %}
+    </div>
+  </div>
+</section>
+<section class="section-space">
+  <div class="container">
+    <p class="text-secondary" style="max-width: 42rem;">{{ categoria.descricao|default:"Sem descrição cadastrada." }}</p>
+    <div class="d-flex gap-2 flex-wrap mb-4">
+      {% if perms.categorias.change_categoria %}
+        <a class="btn btn-bloom" href="{% url 'categoria_update' categoria.pk %}"><i class="bi bi-pencil me-1"></i>Editar</a>
+      {% endif %}
+      {% if perms.categorias.delete_categoria %}
+        <a class="btn btn-outline-danger" href="{% url 'categoria_delete' categoria.pk %}"><i class="bi bi-trash me-1"></i>Excluir</a>
+      {% endif %}
+      <a class="btn btn-outline-secondary" href="{% url 'categoria_list' %}">Voltar</a>
+    </div>
 
-{% if perms.categorias.change_categoria %}
-    <a href="{% url 'categoria_update' categoria.pk %}">Editar</a> |
-{% endif %}
-{% if perms.categorias.delete_categoria %}
-    <a href="{% url 'categoria_delete' categoria.pk %}">Excluir</a> |
-{% endif %}
-<a href="{% url 'categoria_list' %}">Voltar</a>
-</div></section>
+    <h2 class="h5 fw-bold mt-4 pt-4 border-top">Produtos nessa categoria</h2>
+    {% with produtos=categoria.produtos.all %}
+      {% if produtos %}
+        <div class="row g-3 mt-1">
+          {% for produto in produtos %}
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+              <article class="card h-100 shadow-sm product-card">
+                <div class="product-image-wrap d-flex align-items-center justify-content-center">
+                  {% if produto.imagem %}
+                    <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+                  {% else %}
+                    <i class="bi bi-gem display-4 text-secondary" aria-hidden="true"></i>
+                  {% endif %}
+                </div>
+                <div class="card-body d-flex flex-column p-3">
+                  <h3 class="product-title">{{ produto.nome }}</h3>
+                  <strong class="fs-6 my-2">R$ {{ produto.preco }}</strong>
+                  <a class="btn btn-outline-dark btn-sm mt-auto" href="{% url 'produto_detail' produto.pk %}">Ver detalhes</a>
+                </div>
+              </article>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-secondary">Nenhum produto cadastrado nessa categoria ainda.</p>
+      {% endif %}
+    {% endwith %}
+  </div>
+</section>
 {% endblock %}

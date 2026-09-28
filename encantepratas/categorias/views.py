@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import ProtectedError
@@ -14,6 +14,7 @@ def categoria_detail(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     return render(request, 'categorias/detail.html', {'categoria': categoria})
 
+@login_required
 @permission_required ('categorias.add_categoria', raise_exception=True)
 def categoria_create(request):
     if request.method == 'POST':
@@ -26,6 +27,7 @@ def categoria_create(request):
         form = CategoriaForm()
     return render(request, 'categorias/form.html', {'form': form, 'titulo': 'Nova Categoria'})
 
+@login_required
 @permission_required('categorias.change_categoria', raise_exception=True)
 def categoria_update(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
@@ -39,6 +41,7 @@ def categoria_update(request, pk):
         form = CategoriaForm(instance=categoria)
     return render(request, 'categorias/form.html', {'form': form, 'titulo': 'Editar Categoria'})
 
+@login_required
 @permission_required('categorias.delete_categoria', raise_exception=True)
 def categoria_delete(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)

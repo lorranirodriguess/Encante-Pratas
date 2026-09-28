@@ -1,13 +1,22 @@
 {% extends 'base.html' %}
+{% block title %}Excluir pedido — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>Excluir Pedido #{{ pedido.pk }}?</h1>
-<p>Cliente: {{ pedido.cliente }}</p>
-<p>Valor total: R$ {{ pedido.valor_total }}</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Confirmar exclusão</button>
-</form>
-<a href="{% url 'pedido_detail' pedido.pk %}">Cancelar</a>
-</div></section>
+<section class="page-header">
+  <div class="container"><h1 class="h3 fw-bold mb-0">Excluir pedido</h1></div>
+</section>
+<section class="section-space">
+  <div class="container" style="max-width: 34rem;">
+    <div class="alert alert-warning d-flex gap-2 align-items-start">
+      <i class="bi bi-exclamation-triangle fs-4"></i>
+      <div>Tem certeza que deseja excluir o <strong>Pedido #{{ pedido.pk }}</strong> ({{ pedido.cliente }}, R$ {{ pedido.valor_total }})? Essa ação não pode ser desfeita.</div>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-outline-danger">Confirmar exclusão</button>
+        <a class="btn btn-outline-secondary" href="{% url 'pedido_detail' pedido.pk %}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</section>
 {% endblock %}

@@ -18,8 +18,13 @@
       {% for produto in produtos %}
         <div class="col" data-product-name="{{ produto.nome|lower }}">
           <article class="card h-100 shadow-sm product-card">
-            <div class="product-image-wrap d-flex align-items-center justify-content-center"><i class="bi bi-gem display-3 text-secondary" aria-hidden="true"></i></div>
-            <div class="card-body d-flex flex-column p-3">
+              <div class="product-image-wrap d-flex align-items-center justify-content-center">
+                {% if produto.imagem %}
+                  <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+                {% else %}
+                  <i class="bi bi-gem display-3 text-secondary" aria-hidden="true"></i>
+                {% endif %}
+              </div>            <div class="card-body d-flex flex-column p-3">
               <a class="text-decoration-none text-dark" href="{% url 'produto_detail' produto.pk %}"><h3 class="product-title">{{ produto.nome }}</h3></a>
               <p class="small text-secondary mb-1">{{ produto.categoria.nome }}</p>
               <strong class="fs-5 my-3">R$ {{ produto.preco }}</strong>

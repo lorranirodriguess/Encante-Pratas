@@ -1,13 +1,31 @@
 {% extends 'base.html' %}
+{% block title %}{{ usuario.username }} — Encante Pratas{% endblock %}
 {% block content %}
-<section class="section-space"><div class="container">
-<h1>{{ usuario.username }}</h1>
-<p>CPF: {{ usuario.cpf }}</p>
-<p>Telefone: {{ usuario.telefone }}</p>
-<p>Endereço: {{ usuario.rua }}, {{ usuario.numero_casa }} - {{ usuario.bairro }}, {{ usuario.cidade }}/{{ usuario.estado }} - CEP {{ usuario.cep }}</p>
-
-{% if user.pk == usuario.pk or perms.usuarios.change_usuario %}<a href="{% url 'usuario_update' usuario.pk %}">Editar</a> |{% endif %}
-{% if user.pk == usuario.pk or perms.usuarios.delete_usuario %}<a href="{% url 'usuario_delete' usuario.pk %}">Excluir</a> |{% endif %}
-{% if perms.usuarios.view_usuario %}<a href="{% url 'usuario_list' %}">Voltar</a>{% else %}<a href="{% url 'produto_list' %}">Voltar</a>{% endif %}
-</div></section>
+<section class="page-header">
+  <div class="container"><h1 class="h3 fw-bold mb-0">{{ usuario.username }}</h1></div>
+</section>
+<section class="section-space">
+  <div class="container" style="max-width: 34rem;">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <p><strong>CPF:</strong> {{ usuario.cpf }}</p>
+        <p><strong>Telefone:</strong> {{ usuario.telefone }}</p>
+        <p class="mb-0"><strong>Endereço:</strong> {{ usuario.rua }}, {{ usuario.numero_casa }} - {{ usuario.bairro }}, {{ usuario.cidade }}/{{ usuario.estado }} - CEP {{ usuario.cep }}</p>
+      </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap mt-3">
+      {% if user.pk == usuario.pk or perms.usuarios.change_usuario %}
+        <a class="btn btn-outline-dark btn-sm" href="{% url 'usuario_update' usuario.pk %}"><i class="bi bi-pencil me-1"></i>Editar</a>
+      {% endif %}
+      {% if user.pk == usuario.pk or perms.usuarios.delete_usuario %}
+        <a class="btn btn-outline-danger btn-sm" href="{% url 'usuario_delete' usuario.pk %}"><i class="bi bi-trash me-1"></i>Excluir</a>
+      {% endif %}
+      {% if perms.usuarios.view_usuario %}
+        <a class="btn btn-outline-secondary btn-sm" href="{% url 'usuario_list' %}">Voltar</a>
+      {% else %}
+        <a class="btn btn-outline-secondary btn-sm" href="{% url 'produto_list' %}">Voltar</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
 {% endblock %}
