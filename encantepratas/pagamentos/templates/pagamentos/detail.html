@@ -17,9 +17,20 @@
 </section>
 <section class="section-space">
   <div class="container" style="max-width: 34rem;">
+    {% if pagamento.status == 'pendente' %}
+      <div class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-exclamation-circle me-1"></i>Esse pagamento ainda não foi concluído.</span>
+        <a class="btn btn-bloom btn-sm" href="{% url 'pagamento_confirmar' pagamento.pk %}">Finalizar pagamento</a>
+      </div>
+    {% endif %}
     <div class="card shadow-sm">
       <div class="card-body">
-        <p><strong>Pedido:</strong> <a href="{% url 'pedido_detail' pagamento.pedido.pk %}">#{{ pagamento.pedido.pk }}</a> ({{ pagamento.pedido.cliente }})</p>
+        <p><strong>Itens:</strong>
+          {% for item in pagamento.pedido.itens.all %}{{ item.quantidade }}x {{ item.produto.nome }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        </p>
+        {% if perms.pagamentos.view_pagamento %}
+          <p><strong>Cliente:</strong> {{ pagamento.pedido.cliente }}</p>
+        {% endif %}
         <p><strong>Forma de pagamento:</strong> {{ pagamento.get_forma_pagamento_display }}</p>
         <p><strong>Valor:</strong> R$ {{ pagamento.valor }}</p>
         <p class="mb-0"><strong>Data:</strong> {{ pagamento.data_pagamento }}</p>
