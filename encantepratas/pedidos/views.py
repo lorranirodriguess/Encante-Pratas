@@ -18,6 +18,7 @@ def _endereco_do_cliente(cliente):
 
 
 @login_required
+@permission_required('pedidos.ver_proprios_pedidos', raise_exception=True)
 def pedido_list(request):
     if request.user.has_perm('pedidos.view_pedido'):
         pedidos = Pedido.objects.select_related('cliente').all()
@@ -27,6 +28,7 @@ def pedido_list(request):
 
 
 @login_required
+@permission_required('pedidos.ver_proprios_pedidos', raise_exception=True)
 def pedido_detail(request, pk):
     pedido = get_object_or_404(Pedido, pk=pk)
     if pedido.cliente_id != request.user.pk and not request.user.has_perm('pedidos.view_pedido'):
@@ -35,6 +37,7 @@ def pedido_detail(request, pk):
 
 
 @login_required
+@permission_required('pedidos.add_pedido', raise_exception=True)
 def pedido_create(request):
     cliente = Usuario.objects.filter(pk=request.user.pk).first()
     if cliente is None:
@@ -162,6 +165,8 @@ def remover_do_carrinho(request, produto_id):
 
 
 @login_required
+@permission_required('pedidos.add_pedido', raise_exception=True)
+@permission_required('pagamentos.add_pagamento', raise_exception=True)
 def finalizar_compra(request):
     carrinho = _get_carrinho(request)
     if not carrinho:

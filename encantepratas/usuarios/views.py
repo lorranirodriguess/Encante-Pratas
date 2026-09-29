@@ -20,6 +20,7 @@ def usuario_list(request):
 
 
 @login_required
+@permission_required('usuarios.ver_proprio_perfil', raise_exception=True)
 def usuario_detail(request, pk):
     usuario = get_object_or_404(Usuario, pk=pk)
     if request.user.pk != usuario.pk and not request.user.has_perm('usuarios.view_usuario'):
@@ -41,6 +42,7 @@ def usuario_create(request):
 
 
 @login_required
+@permission_required('usuarios.editar_proprio_perfil', raise_exception=True)
 def usuario_update(request, pk):
     usuario = get_object_or_404(Usuario, pk=pk)
     if request.user.pk != usuario.pk and not request.user.has_perm('usuarios.change_usuario'):
@@ -57,6 +59,7 @@ def usuario_update(request, pk):
 
 
 @login_required
+@permission_required('usuarios.excluir_propria_conta', raise_exception=True)
 def usuario_delete(request, pk):
     usuario = get_object_or_404(Usuario, pk=pk)
     if request.user.pk != usuario.pk and not request.user.has_perm('usuarios.delete_usuario'):

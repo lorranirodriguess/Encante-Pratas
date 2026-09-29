@@ -29,6 +29,8 @@ class Pagamento(models.Model):
     class Meta:
         verbose_name = 'Pagamento'
         verbose_name_plural = 'Pagamentos'
-
+        permissions = [
+            ('ver_proprios_pagamentos', 'Pode ver os próprios pagamentos'),
+        ]
     def __str__(self):
         return f'Pagamento #{self.pk} - {self.pedido}'

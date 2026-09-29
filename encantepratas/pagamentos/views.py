@@ -8,6 +8,7 @@ from usuarios.models import Usuario
 
 
 @login_required
+@permission_required('pagamentos.ver_proprios_pagamentos', raise_exception=True)
 def pagamento_list(request):
     if request.user.has_perm('pagamentos.view_pagamento'):
         pagamentos = Pagamento.objects.select_related('pedido').all()
@@ -17,6 +18,7 @@ def pagamento_list(request):
 
 
 @login_required
+@permission_required('pagamentos.ver_proprios_pagamentos', raise_exception=True)
 def pagamento_detail(request, pk):
     pagamento = get_object_or_404(Pagamento, pk=pk)
     if pagamento.pedido.cliente_id != request.user.pk and not request.user.has_perm('pagamentos.view_pagamento'):

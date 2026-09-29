@@ -31,6 +31,9 @@ class Pedido(models.Model):
         verbose_name = 'Pedido'
         verbose_name_plural = 'Pedidos'
         ordering = ['-data_pedido']
+        permissions = [
+            ('ver_proprios_pedidos', 'Pode ver os próprios pedidos'),
+        ]
 
     def __str__(self):
         return f'Pedido #{self.pk} - {self.cliente}'

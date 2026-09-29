@@ -11,9 +11,15 @@ class Usuario(User):
     rua = models.CharField(max_length=200)
     numero_casa = models.CharField(max_length=10)
 
+    
     class Meta:
         verbose_name = 'Usuário'
         verbose_name_plural = 'Usuários'
+        permissions = [
+            ('ver_proprio_perfil', 'Pode ver o próprio perfil'),
+            ('editar_proprio_perfil', 'Pode editar o próprio perfil'),
+            ('excluir_propria_conta', 'Pode excluir a própria conta'),
+        ]
 
     def __str__(self):
         return self.get_full_name() or self.username
